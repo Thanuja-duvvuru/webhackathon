@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Share local resources and connect with your community through CommunityConnect.">
+  <meta name="theme-color" content="#34205f">
+  <title>CommunityConnect | Share more, together</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <main id="auth-screen" class="auth-screen">
+    <section class="auth-brand-panel" aria-label="About CommunityConnect">
+      <a class="brand brand-light" href="#home" aria-label="CommunityConnect home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>Community<span class="brand-accent">Connect</span></span>
+      </a>
+      <div class="auth-brand-copy">
+        <span class="eyebrow">GOOD THINGS GROW TOGETHER</span>
+        <h1>A little sharing<br>goes a long way.</h1>
+        <p>Find the things you need. Share the things you have. Build a stronger neighborhood, one connection at a time.</p>
+        <div class="community-note">
+          <span class="note-icon" aria-hidden="true">✦</span>
+          <span>Made for neighbors, powered by generosity.</span>
+        </div>
+      </div>
+      <div class="auth-orbit orbit-one" aria-hidden="true"></div>
+      <div class="auth-orbit orbit-two" aria-hidden="true"></div>
+    </section>
+
+    <section class="auth-form-panel">
+      <div class="auth-form-wrap">
+        <p class="eyebrow auth-eyebrow">YOUR COMMUNITY STARTS HERE</p>
+        <h2 id="auth-heading">Join your community</h2>
+        <p id="auth-subheading" class="muted">Create an account to share and discover resources.</p>
+
+        <div class="auth-tabs" role="tablist" aria-label="Account access">
+          <button id="login-tab" class="auth-tab" type="button" role="tab" aria-selected="false">Sign in</button>
+          <button id="signup-tab" class="auth-tab active" type="button" role="tab" aria-selected="true">Create account</button>
+        </div>
+
+        <form id="auth-form">
+          <div id="name-field" class="field">
+            <label id="auth-name-label" for="auth-name">Your name</label>
+            <input id="auth-name" name="name" type="text" autocomplete="name" maxlength="100" placeholder="e.g. Jordan Lee">
+          </div>
+          <div class="field">
+            <label for="auth-email">Email address</label>
+            <input id="auth-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+          </div>
+          <div class="field">
+            <label for="auth-password">Password</label>
+            <input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="6" required placeholder="At least 6 characters">
+          </div>
+          <button id="auth-submit" class="button button-primary button-full" type="submit">Create account</button>
+          <p id="auth-message" class="form-message" aria-live="polite"></p>
+        </form>
+        <p class="auth-privacy">Your account is secured by Supabase authentication.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="app" class="app-shell hidden">
+    <header class="site-header">
+      <nav class="nav container" aria-label="Main navigation">
+        <a class="brand" href="#home" aria-label="CommunityConnect home">
+          <span class="brand-mark" aria-hidden="true">C</span>
+          <span>Community<span class="brand-accent">Connect</span></span>
+        </a>
+        <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <div id="nav-links" class="nav-links">
+          <a href="#home">Home</a>
+          <a href="#resources">Explore</a>
+          <a href="#share">Share a resource</a>
+          <a href="#requests">Requests</a>
+          <a href="#how-it-works">How it works</a>
+          <span id="nav-user" class="nav-user"></span>
+          <button id="logout-button" class="button button-outline button-small" type="button">Sign out</button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow"><span class="eyebrow-dot"></span> YOUR NEIGHBORHOOD, SHARED</span>
+            <h1>Good things are<br>better <span>shared.</span></h1>
+            <p>From tools to talent, discover what your neighbors can share — and offer a little help in return.</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#resources">Explore resources <span aria-hidden="true">→</span></a>
+              <a class="button button-text" href="#share">Share something <span aria-hidden="true">↗</span></a>
+            </div>
+            <div class="hero-trust"><span class="trust-stars" aria-hidden="true">✦ ✦ ✦</span> Stronger neighborhoods start with one hello.</div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="hero-circle circle-back"></div>
+            <div class="hero-circle circle-front"></div>
+            <div class="hero-spark spark-one">✦</div>
+            <div class="hero-spark spark-two">✧</div>
+            <div class="floating-card floating-card-top"><span class="floating-icon">🪴</span><span><strong>Garden tools</strong><small>Shared nearby</small></span><span class="floating-check">✓</span></div>
+            <div class="community-illustration">
+              <div class="illustration-sun"></div>
+              <div class="person person-one"><i></i><b></b><em></em></div>
+              <div class="person person-two"><i></i><b></b><em></em></div>
+              <div class="person person-three"><i></i><b></b><em></em></div>
+              <div class="illustration-ground"></div>
+              <span class="plant plant-one">✿</span><span class="plant plant-two">❋</span>
+            </div>
+            <div class="floating-card floating-card-bottom"><span class="mini-avatars"><i>J</i><i>M</i><i>A</i></span><span><strong>Neighbors helping</strong><small>One share at a time</small></span></div>
+          </div>
+        </div>
+        <div class="hero-bottom container"><span>SHARE</span><i></i><span>CONNECT</span><i></i><span>THRIVE</span></div>
+      </section>
+
+      <section class="benefits-strip" aria-label="Community benefits">
+        <div class="container benefits-grid">
+          <div class="benefit"><span class="benefit-icon">♡</span><span><strong>Give what you can</strong><small>Every helpful offer counts</small></span></div>
+          <div class="benefit"><span class="benefit-icon">⌖</span><span><strong>Keep it local</strong><small>Connect right in your area</small></span></div>
+          <div class="benefit"><span class="benefit-icon">✳</span><span><strong>Grow together</strong><small>Build a caring community</small></span></div>
+        </div>
+      </section>
+
+      <section id="resources" class="section resources-section">
+        <div class="container">
+          <div class="section-heading resource-heading">
+            <div>
+              <span class="eyebrow">THE COMMUNITY BOARD</span>
+              <h2>Good finds, close by.</h2>
+              <p>See what's being shared by people around you.</p>
+            </div>
+            <a class="button button-outline" href="#share">Share a resource <span aria-hidden="true">＋</span></a>
+          </div>
+          <div class="resource-tools">
+            <label class="search-box" for="resource-search">
+              <span aria-hidden="true">⌕</span>
+              <input id="resource-search" type="search" placeholder="Search resources, categories, or places">
+            </label>
+            <label class="select-wrap" for="category-filter">
+              <span class="sr-only">Filter by category</span>
+              <select id="category-filter">
+                <option value="all">All categories</option>
+                <option value="Tools">Tools</option>
+                <option value="Home &amp; Garden">Home &amp; Garden</option>
+                <option value="Books &amp; Learning">Books &amp; Learning</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Sports &amp; Outdoors">Sports &amp; Outdoors</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+          </div>
+          <div id="resource-list" class="resource-grid" aria-live="polite"></div>
+          <div id="resource-empty" class="empty-state hidden">
+            <span class="empty-icon">✦</span>
+            <h3>No resources found just yet</h3>
+            <p>Try another search, or be the first to share something with your neighbors.</p>
+            <a class="button button-primary" href="#share">Share a resource</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="share" class="section share-section">
+        <div class="container share-layout">
+          <div class="share-copy">
+            <span class="eyebrow">PASS IT ON</span>
+            <h2>Have something<br>to share?</h2>
+            <p>That drill collecting dust? Extra seedlings? Your neighbors might need exactly what you have. Add it to the board and make someone's day.</p>
+            <div class="share-aside"><span aria-hidden="true">✧</span><p>Sharing doesn't have to be a big thing. A small offer can make a big difference.</p></div>
+          </div>
+          <form id="share-form" class="form-card">
+            <div class="form-card-heading">
+              <span class="form-card-icon">＋</span>
+              <div><h3>Share a resource</h3><p>Let your community know what you can offer.</p></div>
+            </div>
+            <div class="field">
+              <label for="share-name">Your name</label>
+              <input id="share-name" name="name" type="text" maxlength="100" required placeholder="How neighbors know you">
+            </div>
+            <div class="field">
+              <label for="share-resource-name">Resource name</label>
+              <input id="share-resource-name" name="resourceName" type="text" maxlength="120" required placeholder="e.g. Cordless drill">
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="share-category">Category</label>
+                <select id="share-category" name="category" required>
+                  <option value="" disabled selected>Choose one</option>
+                  <option>Tools</option>
+                  <option>Home &amp; Garden</option>
+                  <option>Books &amp; Learning</option>
+                  <option>Electronics</option>
+                  <option>Sports &amp; Outdoors</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="share-location">Location</label>
+                <input id="share-location" name="location" type="text" maxlength="160" required placeholder="Neighborhood or area">
+              </div>
+            </div>
+            <div class="field">
+              <label for="share-description">Description</label>
+              <textarea id="share-description" name="description" rows="3" maxlength="1000" required placeholder="What should neighbors know about it?"></textarea>
+            </div>
+            <button id="share-submit" class="button button-primary button-full" type="submit">Post to the community <span aria-hidden="true">→</span></button>
+            <p id="share-message" class="form-message" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="requests" class="section requests-section">
+        <div class="container">
+          <div class="section-heading">
+            <div><span class="eyebrow">KEEP THINGS MOVING</span><h2>Resource requests</h2><p>Track the things you’ve asked to borrow and manage requests for your shared items.</p></div>
+            <button id="refresh-requests" class="button button-outline button-small" type="button">Refresh</button>
+          </div>
+          <div class="request-group">
+            <h3 class="request-group-title">Items I’ve requested</h3>
+            <div id="my-requests-list" class="requests-list" aria-live="polite"></div>
+            <div id="my-requests-empty" class="empty-inline hidden">You haven’t requested any items yet.</div>
+          </div>
+          <div class="request-group">
+            <h3 class="request-group-title">Requests for my items</h3>
+            <div id="requests-list" class="requests-list" aria-live="polite"></div>
+            <div id="requests-empty" class="empty-inline hidden"><span aria-hidden="true">♡</span> No one has requested your resources yet. When they do, you'll see them here.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="section how-section">
+        <div class="container">
+          <div class="section-heading centered">
+            <span class="eyebrow">THREE LITTLE STEPS</span>
+            <h2>Community is a team sport.</h2>
+            <p>It’s simple to share more and make your neighborhood a little closer.</p>
+          </div>
+          <div class="steps-grid">
+            <article class="step-card"><span class="step-number">01</span><span class="step-icon">⌕</span><h3>Find what you need</h3><p>Browse the community board for resources offered by people nearby.</p></article>
+            <article class="step-card"><span class="step-number">02</span><span class="step-icon">↗</span><h3>Ask or offer</h3><p>Request a resource you need or post something useful to share.</p></article>
+            <article class="step-card"><span class="step-number">03</span><span class="step-icon">♡</span><h3>Make a connection</h3><p>Coordinate with your neighbor and keep good things moving around.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="contact-section">
+        <div class="container contact-inner">
+          <div><span class="eyebrow">WE’RE IN THIS TOGETHER</span><h2>Have a question or an idea?</h2><p>We’d love to hear what would make sharing easier in your community.</p></div>
+          <a class="button button-light" href="mailto:hello@communityconnect.example">Say hello <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true">C</span><span>Community<span class="brand-accent">Connect</span></span></a>
+        <p>Good things grow when we share them.</p>
+        <span class="footer-copy">© <span id="footer-year"></span> CommunityConnect</span>
+      </div>
+    </footer>
+  </div>
+
+  <dialog id="resource-dialog" class="resource-dialog" aria-labelledby="dialog-title">
+    <button id="dialog-close" class="dialog-close" type="button" aria-label="Close details">×</button>
+    <div id="dialog-content"></div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+</body>
+</html>
