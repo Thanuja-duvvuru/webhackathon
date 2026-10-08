@@ -44,7 +44,7 @@ function initializeApp() {
     "name-field", "auth-name-label", "auth-heading", "auth-subheading", "auth-submit", "auth-message",
     "login-tab", "signup-tab", "logout-button", "nav-user", "nav-toggle", "nav-links",
     "share-form", "share-name", "share-submit", "share-message", "resource-list",
-    "resource-empty", "resource-search", "category-filter", "requests-list",
+    "share-image", "share-image-preview", "resource-empty", "resource-search", "category-filter", "requests-list",
     "requests-empty", "my-requests-list", "my-requests-empty", "refresh-requests", "resource-dialog", "dialog-content",
     "dialog-close", "toast", "footer-year"
   ].forEach((id) => {
@@ -79,6 +79,7 @@ function bindEvents() {
   elements.authForm.addEventListener("submit", handleAuthSubmit);
   elements.logoutButton.addEventListener("click", handleSignOut);
   elements.shareForm.addEventListener("submit", handleShareSubmit);
+  elements.shareImage.addEventListener("change", previewResourceImage);
   elements.resourceSearch.addEventListener("input", renderResources);
   elements.categoryFilter.addEventListener("change", renderResources);
   elements.refreshRequests.addEventListener("click", refreshRequestLists);
@@ -306,18 +307,47 @@ async function handleShareSubmit(event) {
     const category = document.getElementById("share-category").value;
     const location = document.getElementById("share-location").value.trim();
     const description = document.getElementById("share-description").value.trim();
-    const { error } = await communityConnectClient.from("resources").insert({
+    const image = elements.shareImage.files && elements.shareImage.files[0];
+    validateResourceImage(image);
+
+    const extension = image.name.split(".").pop().toLowerCase();
+    const imagePath = `${user.id}/${createUniqueId()}.${extension}`;
+    const { error: uploadError } = await communityConnectClient.storage
+      .from("resource-images")
+      .upload(imagePath, image, {
+        cacheControl: "3600",
+        contentType: image.type,
+        upsert: false
+      });
+    if (uploadError) throw uploadError;
+
+    const { data: publicImage } = communityConnectClient.storage
+      .from("resource-images")
+      .getPublicUrl(imagePath);
+
+    const { error: insertError } = await communityConnectClient.from("resources").insert({
       user_id: user.id,
       owner_name: name,
       resource_name: resourceName,
       category,
       location,
       description,
+      image_url: publicImage.publicUrl,
+      image_path: imagePath,
       status: "Available"
     });
-    if (error) throw error;
+    if (insertError) {
+      const { error: cleanupError } = await communityConnectClient.storage
+        .from("resource-images")
+        .remove([imagePath]);
+      if (cleanupError) {
+        throw new Error(`The resource could not be saved (${insertError.message}), and its uploaded photo could not be cleaned up (${cleanupError.message}).`);
+      }
+      throw insertError;
+    }
 
     elements.shareForm.reset();
+    clearImagePreview();
     setUserLabels();
     setFormMessage(elements.shareMessage, "Your resource is on the community board. Thanks for sharing!", "success");
     showToast("Resource shared successfully.", "success");
@@ -369,6 +399,16 @@ function renderResources() {
 function createResourceCard(resource) {
   const card = document.createElement("article");
   card.className = "resource-card";
+
+  if (resource.image_url) {
+    const photo = document.createElement("img");
+    photo.className = "resource-photo";
+    photo.src = resource.image_url;
+    photo.alt = `${resource.name || "Shared resource"} photo`;
+    photo.loading = "lazy";
+    photo.addEventListener("error", () => photo.classList.add("image-load-failed"), { once: true });
+    card.append(photo);
+  }
 
   const top = document.createElement("div");
   top.className = "resource-card-top";
@@ -736,7 +776,7 @@ async function deleteResource(resourceId) {
     .delete()
     .eq("id", resourceId)
     .eq("user_id", state.user.id)
-    .select("id")
+    .select("id, image_path")
     .maybeSingle();
   if (error) {
     showToast(`Could not remove this resource: ${error.message}`, "error");
@@ -745,6 +785,16 @@ async function deleteResource(resourceId) {
   if (!deletedResource) {
     showToast("This resource was not removed. Check the resources delete policy.", "error");
     return;
+  }
+  if (deletedResource.image_path) {
+    const { error: imageError } = await communityConnectClient.storage
+      .from("resource-images")
+      .remove([deletedResource.image_path]);
+    if (imageError) {
+      showToast(`Resource removed, but its photo could not be deleted: ${imageError.message}`, "error");
+      await Promise.all([loadResources(), loadOwnerRequests(), loadMyRequests()]);
+      return;
+    }
   }
   showToast("Resource removed.", "success");
   await Promise.all([loadResources(), loadOwnerRequests(), loadMyRequests()]);
@@ -758,6 +808,13 @@ function openResourceDetails(resource) {
   icon.className = "dialog-icon";
   icon.setAttribute("aria-hidden", "true");
   icon.textContent = categoryIcons[resource.category] || categoryIcons.Other;
+  if (resource.image_url) {
+    const photo = document.createElement("img");
+    photo.className = "dialog-resource-photo";
+    photo.src = resource.image_url;
+    photo.alt = `${resource.name || "Shared resource"} photo`;
+    content.append(photo);
+  }
   const category = makeTextElement("span", resource.category || "Other");
   category.className = "dialog-category";
   const title = makeTextElement("h2", resource.name || "Untitled resource");
@@ -774,6 +831,58 @@ function openResourceDetails(resource) {
   );
   content.append(icon, category, title, description, details);
   elements.resourceDialog.showModal();
+}
+
+function previewResourceImage() {
+  const file = elements.shareImage.files && elements.shareImage.files[0];
+  if (!file) {
+    clearImagePreview();
+    return;
+  }
+
+  try {
+    validateResourceImage(file);
+  } catch (error) {
+    elements.shareImage.value = "";
+    clearImagePreview();
+    setFormMessage(elements.shareMessage, error.message, "error");
+    return;
+  }
+
+  if (elements.shareImagePreview.dataset.objectUrl) {
+    URL.revokeObjectURL(elements.shareImagePreview.dataset.objectUrl);
+  }
+  const objectUrl = URL.createObjectURL(file);
+  elements.shareImagePreview.src = objectUrl;
+  elements.shareImagePreview.dataset.objectUrl = objectUrl;
+  elements.shareImagePreview.classList.remove("hidden");
+  setFormMessage(elements.shareMessage, "");
+}
+
+function clearImagePreview() {
+  const objectUrl = elements.shareImagePreview.dataset.objectUrl;
+  if (objectUrl) URL.revokeObjectURL(objectUrl);
+  elements.shareImagePreview.removeAttribute("src");
+  delete elements.shareImagePreview.dataset.objectUrl;
+  elements.shareImagePreview.classList.add("hidden");
+}
+
+function validateResourceImage(file) {
+  if (!file) throw new Error("Please choose a photo of the resource.");
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error("Choose a JPG, PNG, or WebP image.");
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error("The image must be 5 MB or smaller.");
+  }
+}
+
+function createUniqueId() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    return window.crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
 function createStatusBadge(status) {

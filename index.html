@@ -209,6 +209,12 @@
               <label for="share-description">Description</label>
               <textarea id="share-description" name="description" rows="3" maxlength="1000" required placeholder="What should neighbors know about it?"></textarea>
             </div>
+            <div class="field">
+              <label for="share-image">Photo of the resource</label>
+              <input id="share-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required>
+              <small class="field-hint">Upload a JPG, PNG, or WebP image (up to 5 MB).</small>
+              <img id="share-image-preview" class="image-preview hidden" alt="Preview of the selected resource">
+            </div>
             <button id="share-submit" class="button button-primary button-full" type="submit">Post to the community <span aria-hidden="true">→</span></button>
             <p id="share-message" class="form-message" aria-live="polite"></p>
           </form>

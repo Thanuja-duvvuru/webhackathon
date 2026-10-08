@@ -144,6 +144,8 @@ button { cursor: pointer; }
 .resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
 .resource-card { display: flex; min-height: 267px; flex-direction: column; border: 1px solid #ece8f0; border-radius: 11px; background: white; padding: 20px; transition: box-shadow .2s ease, transform .2s ease; }
 .resource-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.resource-photo { width: calc(100% + 40px); height: 175px; align-self: center; margin: -20px -20px 16px; border-radius: 11px 11px 0 0; background: #f2eef9; object-fit: cover; }
+.resource-photo.image-load-failed { display: none; }
 .resource-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .resource-icon { display: grid; width: 47px; height: 47px; flex: 0 0 auto; place-items: center; border-radius: 12px; background: var(--purple-soft); font-size: 23px; }
 .resource-category { display: block; margin-top: 15px; color: var(--purple); font-size: 10px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; }
@@ -214,10 +216,13 @@ button { cursor: pointer; }
 
 .resource-dialog { position: fixed; width: min(520px, calc(100% - 32px)); max-height: min(85vh, 680px); overflow: auto; border: 0; border-radius: 14px; padding: 30px; box-shadow: 0 25px 80px rgba(29,18,45,.28); }
 .resource-dialog::backdrop { background: rgba(34,24,49,.58); backdrop-filter: blur(3px); }
+.dialog-resource-photo { display: block; width: 100%; max-height: 280px; margin: 12px 0 18px; border-radius: 10px; background: #f2eef9; object-fit: cover; }
 .dialog-close { position: absolute; top: 12px; right: 14px; width: 35px; height: 35px; border: 0; border-radius: 50%; background: #f2eef6; color: var(--purple); font-size: 24px; line-height: 1; }
 .dialog-icon { display: grid; width: 55px; height: 55px; place-items: center; border-radius: 14px; background: var(--purple-soft); font-size: 27px; }
 .resource-dialog h2 { margin: 17px 0 5px; font: 800 26px "Manrope", sans-serif; }.dialog-category { color: var(--purple); font-size: 11px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; }
 .dialog-description { margin: 17px 0; color: #686473; white-space: pre-wrap; }.dialog-details { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 15px; color: #706c79; font-size: 13px; }
+.field-hint { margin-top: -3px; color: var(--muted); font-size: 11px; }
+.image-preview { display: block; width: min(100%, 360px); max-height: 220px; border: 1px solid var(--line); border-radius: 8px; background: #f2eef9; object-fit: cover; }
 .toast { position: fixed; z-index: 30; top: 18px; right: 20px; max-width: min(420px, calc(100% - 40px)); border-radius: 8px; background: var(--purple-dark); color: white; padding: 12px 17px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transform: translateY(-8px); transition: opacity .2s, transform .2s; font-size: 13px; }
 .toast.visible { opacity: 1; transform: translateY(0); }.toast.error { background: #9f3944; }.toast.success { background: #347355; }
 
